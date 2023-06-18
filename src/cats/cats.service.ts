@@ -1,10 +1,11 @@
 import { Cat } from './interfaces/cat.interface';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { CreateCatDto } from './dto/create-cat.dto';
-import {randomStringGenerator} from "@nestjs/common/utils/random-string-generator.util";
 
 @Injectable()
 export class CatsService {
+  private readonly logger = new Logger(CatsService.name);
+
   private readonly cats: Cat[] = [];
 
   init() {
@@ -13,6 +14,7 @@ export class CatsService {
     dto.age = 6;
     dto.breed = 'xxxx';
     this.cats.push(dto);
+    this.logger.log('init');
   }
   create(cat: Cat) {
     this.cats.push(cat);

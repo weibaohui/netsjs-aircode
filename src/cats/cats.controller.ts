@@ -16,13 +16,28 @@ import { CatsService } from './cats.service';
 import { Cat } from './interfaces/cat.interface';
 import { RolesGuard } from '../common/roles.guard';
 import { LoggingInterceptor } from '../common/logging.interceptor';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('cats')
 @UseGuards(RolesGuard)
 @UseInterceptors(LoggingInterceptor)
 export class CatsController {
-  constructor(private catsService: CatsService) {}
+  constructor(
+    private catsService: CatsService,
+    private configService: ConfigService,
+  ) {}
 
+  @Get('/config')
+  async config() {
+    // get an environment variable
+    const dbUser = this.configService.get<string>('DATABASE_USER');
+    // get a custom configuration value
+    const dbHost = this.configService.get<string>('x.y', 'dddd');
+    return {
+      dbUser: dbUser,
+      dbHost: dbHost,
+    };
+  }
   @Post()
   async create(@Body() createCatDto: CreateCatDto) {
     this.catsService.create(createCatDto);
